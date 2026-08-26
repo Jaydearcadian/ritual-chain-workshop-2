@@ -1,4 +1,4 @@
-# Ritual Predict
+# Ritual Predict — Workshop
 
 A self-resolving binary prediction market on [Ritual Chain](https://docs.ritualfoundation.org).
 
@@ -34,11 +34,67 @@ Winners then pull their proportional share of the pool.
    jq  precompile     0x0803   ──jsonPath, outputType=uint256───────▶  observed value
                                           │
                                           ▼
-                        observed ⋈ target  →  Resolved(YES|NO)
+                        observed ⋈ target  →  Resolved(YES/NO)
                         read failed 3×     →  Invalid (everyone refunds)
 ```
 
 ---
+
+## Repo layout
+
+```
+hardhat/                 RitualPredict contract, tests, deploy scripts
+web/                     Next.js workshop demo (landing + /markets + /mechanics)
+  app/page.tsx           cyber-luxury landing — 4-beat pipeline + lifecycle strip
+  app/markets/page.tsx   dApp — create, bet, claim, fund
+  app/mechanics/page.tsx deep-dive — failure semantics, block-time, payouts
+  app/api/oracle/eth/    demo oracle (GET → { price, symbol, ts })
+  lib/predict-abi.ts     ABI from hardhat/artifacts (regenerate via export-abi)
+```
+
+## Prerequisites
+
+- Node.js 20+ and `npm` (or `pnpm`)
+- A wallet with testnet RITUAL from <https://faucet.ritualfoundation.org>
+
+## Setup — contracts
+
+```bash
+cd hardhat
+npm install
+cp .env.example .env   # set RITUAL_PRIVATE_KEY (DEPLOYER_PRIVATE_KEY in hardhat.config.ts)
+npx hardhat test
+npx hardhat run scripts/deploy.ts --network ritual
+PREDICT_ADDRESS=0x... npx hardhat run scripts/status.ts --network ritual
+```
+
+## Setup — web demo
+
+```bash
+cd web
+npm install
+cp .env.example .env.local
+# .env.local needs:
+#   NEXT_PUBLIC_PREDICT_ADDRESS=0x...   # from deploy.ts
+#   NEXT_PUBLIC_DEMO_ORACLE_URL=https://<tunnel>/api/oracle/eth  # or http://localhost:3000/api/oracle/eth
+npm run dev   # http://localhost:3000  — landing at /, dApp at /markets
+npm run build
+npx tsc --noEmit
+```
+
+### Demo oracle & tunnel
+
+The TEE executor that runs the HTTP precompile cannot reach `localhost`. For live resolution:
+
+```bash
+cd web && npm run dev
+cloudflared tunnel --url http://localhost:3000
+# copy https://...trycloudflare.com → use as NEXT_PUBLIC_DEMO_ORACLE_URL
+# and as ORACLE_URL when creating a market (CLI or UI)
+PREDICT_ADDRESS=0x... ORACLE_URL=https://<tunnel>/api/oracle/eth npx hardhat run scripts/create-demo-market.ts --network ritual
+```
+
+See `web/README.md` for full oracle/tunnel notes.
 
 ### Design decisions worth knowing
 
@@ -77,21 +133,6 @@ takes their stake back.
 
 **Resolution parameters are immutable.** `target`, `comparator`, `oracleUrl`, `jsonPath`, and
 `resolveBlock` have no setter. The `ResolutionRuleSet` event records them at creation.
-
----
-
-## Prerequisites
-
-- Node.js 20+ and `pnpm`
-- A wallet with testnet RITUAL from <https://faucet.ritualfoundation.org>
-
-## Setup
-
-```bash
-cd hardhat
-pnpm install
-cp .env.example .env
-```
 
 ---
 
