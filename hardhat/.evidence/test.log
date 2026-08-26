@@ -1,0 +1,8 @@
+    ✔ Should emit the Increment event when calling the inc() function
+    ✔ The sum of the Increment events should match the current value
+    ✔ compiles and deploys with blockTimeMs
+    ✔ createMarket validates and books a market
+    ✔ accepts YES/NO bets and tracks pools
+    ✔ rejects empty question and zero stake
+    ✔ getMarkets returns newest-first
+7 passing (7 nodejs)
