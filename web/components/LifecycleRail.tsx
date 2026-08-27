@@ -52,7 +52,7 @@ export function LifecycleRail({ state, outcome, showInvalidBranch = false, pulse
                 aria-hidden
                 className="h-1.5 w-full rounded-full transition-all duration-700"
                 style={{
-                  background: active || past ? token.color : dim ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.08)",
+                  background: active || past ? token.color : dim ? "var(--paper)" : "var(--track)",
                   boxShadow: active && pulse && !isInvalidBranch ? `0 0 14px ${token.color}` : undefined,
                 }}
               />
@@ -96,7 +96,7 @@ export function LifecycleRail({ state, outcome, showInvalidBranch = false, pulse
           )}
         </p>
         {state === 2 && pulse && (
-          <span aria-hidden className="h-px w-16 overflow-hidden rounded-full bg-white/10">
+          <span aria-hidden className="h-px w-16 overflow-hidden rounded-full bg-[color:var(--track)]">
             <span className="signal-sweep block h-px w-full" style={{ background: "linear-gradient(90deg, transparent, var(--state-resolving), transparent)" }} />
           </span>
         )}

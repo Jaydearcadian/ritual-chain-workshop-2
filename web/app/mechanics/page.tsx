@@ -19,12 +19,13 @@ const FAILURES = [
 export default function Mechanics() {
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 pb-16 pt-10">
-      <p className="text-[11px] uppercase tracking-[0.35em] text-[color:var(--text-muted)]">Mechanics</p>
-      <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight text-[color:var(--text-primary)]">
-        How RitualPredict actually works
+      <p className="text-[11px] uppercase tracking-[0.35em] text-[color:var(--text-muted)]">Odds · Mechanics</p>
+      <h1 className="mt-4 font-display text-balance text-4xl font-semibold uppercase tracking-[0.01em] text-[color:var(--text-primary)]">
+        How Odds settles
       </h1>
       <p className="mt-4 max-w-xl text-base leading-relaxed text-[color:var(--text-secondary)]">
-        The detail the landing leaves out — including where this workshop demo is still unproven.
+        The detail the landing leaves out — the RitualPredict primitive under every Odds round, including where this
+        testnet demo is still unproven.
       </p>
 
       {/* The lifecycle, annotated — the one visual center of this page too */}
@@ -147,13 +148,13 @@ export default function Mechanics() {
 
       <div className="mt-16 flex flex-wrap gap-3 border-t border-[color:var(--hairline)] pt-8">
         <Link href="/markets" className="btn-primary group text-sm">
-          Open the markets{" "}
+          Go to the markets{" "}
           <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
             →
           </span>
         </Link>
         <Link href="/" className="btn-secondary text-sm">
-          Back to workshop
+          Back to Odds
         </Link>
       </div>
     </div>

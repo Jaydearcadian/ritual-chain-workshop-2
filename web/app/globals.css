@@ -1,90 +1,91 @@
 @import "tailwindcss";
 
-/* ── RitualPredict canonical tokens (see DESIGN.md) ─────────────────────── */
+/* ── Odds editorial tokens (see DESIGN.md) ────────────────────────────────── */
 :root {
-  /* surfaces */
-  --ink-900: #0a0612;
-  --ink-800: #100a1c;
-  --ink-700: #181026;
-  --paper: rgba(255, 255, 255, 0.04);
-  --hairline: rgba(255, 255, 255, 0.09);
-  --hairline-strong: rgba(255, 255, 255, 0.16);
+  /* surfaces — warm paper */
+  --canvas: #faf7f2;
+  --canvas-deep: #f1ebe1;
+  --surface-raised: #ffffff;
+  --paper: rgba(25, 22, 19, 0.04);
+  --badge-bg: rgba(25, 22, 19, 0.05);
+  --hairline: rgba(25, 22, 19, 0.14);
+  --hairline-strong: rgba(25, 22, 19, 0.3);
+  --track: rgba(25, 22, 19, 0.1);
+  --pool-track: #e6dfd2;
 
-  /* text */
-  --text-primary: #f5f2fb;
-  --text-secondary: #b9b2cd;
-  --text-muted: #8f88a6;
-  --text-faint: #6d6684;
+  /* ink text */
+  --ink: #191613;
+  --ink-secondary: #565046;
+  --ink-muted: #857e72;
+  --ink-faint: #b0a99c;
 
-  /* brand */
-  --violet-brand: #7c3aed;
-  --magenta-brand: #ec4899;
-  --orange-brand: #f97316;
-  --accent-soft: rgba(236, 72, 153, 0.12);
+  /* the one accent — semantic only (Invalid/refund, focus, the survivor) */
+  --accent: #b4451f;
+  --accent-soft: rgba(180, 69, 31, 0.1);
 
-  /* lifecycle states */
-  --state-open: #a78bfa;
-  --state-closed: #7dd3fc;
-  --state-resolving: #f472b6;
-  --state-resolved: #34d399;
-  --state-invalid: #fbbf24;
+  /* dApp lifecycle states (functional, adapted for paper) */
+  --state-open: #2f5d8a;
+  --state-closed: #6e675c;
+  --state-resolving: #8a6d3b;
+  --state-resolved: #2f6f4f;
+  --state-invalid: var(--accent);
 
   /* feedback */
-  --ok: #34d399;
-  --warn: #fbbf24;
-  --danger: #f87171;
+  --ok: #2f6f4f;
+  --ok-wash: rgba(47, 111, 79, 0.1);
+  --warn: var(--accent);
+  --warn-wash: rgba(180, 69, 31, 0.08);
+  --warn-border: rgba(180, 69, 31, 0.35);
+  --danger: #a13224;
+  --danger-wash: rgba(161, 50, 36, 0.08);
+
+  /* pool bar */
+  --pool-yes: var(--ink);
 
   /* geometry */
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --glow-rest: 0 0 24px rgba(236, 72, 153, 0.18);
-  --glow-lift: 0 0 44px rgba(236, 72, 153, 0.32);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
 
   /* motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 160ms;
-  --dur-slow: 560ms;
+  --dur-slow: 480ms;
 
-  /* aliases for existing class names */
-  --background: var(--ink-900);
-  --foreground: var(--text-primary);
+  /* legacy aliases — components reference these names */
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-secondary);
+  --text-muted: var(--ink-muted);
+  --text-faint: var(--ink-faint);
+  --ink-900: var(--canvas);
+  --ink-800: var(--surface-raised);
+  --ink-700: var(--canvas-deep);
+  --background: var(--canvas);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-oswald);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-  --color-violet-brand: var(--violet-brand);
-  --color-magenta-brand: var(--magenta-brand);
-  --color-orange-brand: var(--orange-brand);
-  --color-state-open: var(--state-open);
-  --color-state-closed: var(--state-closed);
-  --color-state-resolving: var(--state-resolving);
-  --color-state-resolved: var(--state-resolved);
-  --color-state-invalid: var(--state-invalid);
-  --color-ok: var(--ok);
-  --color-warn: var(--warn);
-  --color-danger: var(--danger);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--ink-900);
-  color: var(--text-primary);
+  background: var(--canvas);
+  color: var(--ink);
   font-size: 1rem; /* 16px body — canonical */
   line-height: 1.65;
 }
 
 /* Global keyboard focus — never removed without replacement */
 :focus-visible {
-  outline: 2px solid #c4b5fd;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -100,8 +101,8 @@ body {
   align-items: center;
   padding: 0 1.25rem;
   border-radius: 999px;
-  background: var(--text-primary);
-  color: var(--ink-900);
+  background: var(--ink);
+  color: var(--canvas);
   font-weight: 600;
   transition: top var(--dur-fast) var(--ease-out);
 }
@@ -109,27 +110,19 @@ body {
   top: 0.75rem;
 }
 
-/* Brand gradient text — headings only */
-.brand-text {
-  background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #fb923c 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 /* Raised card surface */
 .surface {
-  background: linear-gradient(180deg, var(--ink-800), color-mix(in srgb, var(--ink-800) 60%, var(--ink-900)));
+  background: var(--surface-raised);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-lg);
 }
 .surface-inset {
-  background: var(--ink-700);
+  background: var(--canvas-deep);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
 }
 
-/* Primary pill control (one per view) */
+/* Primary pill control (one per view) — solid ink, no glow */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -138,14 +131,15 @@ body {
   min-height: 44px;
   padding: 0 1.75rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--violet-brand), var(--magenta-brand) 55%, var(--orange-brand));
-  color: var(--text-primary);
+  background: var(--ink);
+  color: var(--canvas);
   font-weight: 600;
-  box-shadow: var(--glow-rest);
-  transition: box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 .btn-primary:hover:not(:disabled) {
-  box-shadow: var(--glow-lift);
+  background: #2e2a24;
   transform: translateY(-1px);
 }
 .btn-primary:disabled {
@@ -163,14 +157,16 @@ body {
   padding: 0 1.5rem;
   border-radius: 999px;
   border: 1px solid var(--hairline);
-  background: var(--paper);
-  color: var(--text-secondary);
+  background: transparent;
+  color: var(--ink-secondary);
   font-weight: 500;
-  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 .btn-secondary:hover:not(:disabled) {
   border-color: var(--hairline-strong);
-  color: var(--text-primary);
+  color: var(--ink);
 }
 .btn-secondary:disabled {
   opacity: 0.45;
@@ -185,11 +181,11 @@ body {
   min-height: 44px;
   padding: 0 0.875rem;
   border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  color: var(--ink-muted);
   transition: color var(--dur-fast) var(--ease-out);
 }
 .btn-quiet:hover:not(:disabled) {
-  color: var(--text-primary);
+  color: var(--ink);
 }
 
 /* Standard input */
@@ -199,47 +195,52 @@ body {
   padding: 0 0.75rem;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  background: var(--ink-700);
-  color: var(--text-primary);
+  background: var(--surface-raised);
+  color: var(--ink);
   transition: border-color var(--dur-fast) var(--ease-out);
 }
 .field-input::placeholder {
-  color: var(--text-faint);
+  color: var(--ink-faint);
 }
 .field-input:focus-visible {
-  border-color: rgba(167, 139, 250, 0.55);
+  border-color: var(--accent);
 }
 
-/* Ambient page texture — static, masked, non-animated */
-.tech-grid {
-  background-image:
-    linear-gradient(rgba(124, 58, 237, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(124, 58, 237, 0.05) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%);
-}
-
-/* Entrance reveals */
+/* Entrance reveals — subtle, once */
 @keyframes rise-in {
-  0% { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.rise-in { animation: rise-in var(--dur-slow) var(--ease-out) both; }
-.rise-in-late { animation: rise-in var(--dur-slow) 120ms var(--ease-out) both; }
-
-@keyframes accent-wipe {
-  0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateY(2px); }
-  55% { opacity: 1; clip-path: inset(0 12% 0 0); }
-  100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+.rise-in {
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
 }
-.accent-wipe { animation: accent-wipe 700ms 90ms var(--ease-out) both; }
+.rise-in-late {
+  animation: rise-in var(--dur-slow) 120ms var(--ease-out) both;
+}
 
 /* Signal sweep — used only under the Resolving state */
-@keyframes signal-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-.signal-sweep { animation: signal-sweep 1.8s ease-in-out infinite; }
+@keyframes signal-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.signal-sweep {
+  animation: signal-sweep 1.8s ease-in-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

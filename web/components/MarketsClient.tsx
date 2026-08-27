@@ -63,7 +63,7 @@ export default function MarketsClient() {
           {executionBalance === 0n && isConfigured && (
             <span
               className="rounded-full px-2.5 py-1 text-xs"
-              style={{ background: "rgba(251,191,36,0.12)", color: "var(--warn)" }}
+              style={{ background: "var(--warn-wash)", color: "var(--warn)" }}
               role="status"
             >
               Top up before resolution can fire
@@ -78,7 +78,7 @@ export default function MarketsClient() {
       {!isConfigured ? (
         <div
           className="rounded-3xl p-8 text-center"
-          style={{ border: "1px solid rgba(251,191,36,0.25)", background: "rgba(251,191,36,0.05)" }}
+          style={{ border: "1px solid var(--warn-border)", background: "var(--warn-wash)" }}
           role="status"
         >
           <p className="text-base font-medium" style={{ color: "var(--warn)" }}>
@@ -221,7 +221,7 @@ function CreateForm({ onCreated }: { onCreated: () => void }) {
         {err && (
           <p
             className="mt-4 break-all rounded-xl px-4 py-3 text-sm leading-relaxed"
-            style={{ background: "rgba(248,113,113,0.12)", color: "var(--danger)" }}
+            style={{ background: "var(--danger-wash)", color: "var(--danger)" }}
             role="alert"
           >
             {err}
@@ -374,7 +374,7 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
         </div>
         <span
           className="rounded-full px-3 py-1.5 text-xs font-medium"
-          style={{ background: "rgba(255,255,255,0.06)", color: tokenColor, border: `1px solid ${tokenColor}44` }}
+          style={{ background: "var(--badge-bg)", color: tokenColor, border: `1px solid ${tokenColor}44` }}
         >
           {label}
         </span>
@@ -437,9 +437,9 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
         >
           <div
             className="transition-all duration-700"
-            style={{ width: `${yesPct}%`, background: "linear-gradient(90deg, var(--violet-brand), var(--magenta-brand))" }}
+            style={{ width: `${yesPct}%`, background: "var(--pool-yes)" }}
           />
-          <div className="flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <div className="flex-1" style={{ background: "var(--pool-track)" }} />
         </div>
         <p className="mt-2 text-xs text-[color:var(--text-muted)]">
           {pool === 0n ? "No bets yet" : `Total ${formatEther(pool)} RITUAL - YES ${yesPct.toFixed(1)}%`}
@@ -455,7 +455,7 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
             <span className="rounded-full border border-[color:var(--hairline)] bg-[color:var(--paper)] px-3 py-1.5 text-[color:var(--text-muted)]">settled</span>
           )}
           {claimable !== undefined && claimable > 0n && !settled && (
-            <span className="rounded-full px-3 py-1.5" style={{ background: "rgba(52,211,153,0.12)", color: "var(--ok)" }}>
+            <span className="rounded-full px-3 py-1.5" style={{ background: "var(--ok-wash)", color: "var(--ok)" }}>
               claimable {formatEther(claimable)} RITUAL
             </span>
           )}
@@ -480,8 +480,7 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
               type="button"
               disabled={!!busy}
               onClick={() => act("yes", () => writeContractAsync({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "bet", args: [market.id, true], value: parseEther(betAmount || "0"), chainId: ritualChain.id }))}
-              className="min-h-11 rounded-full px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#059669" }}
+              className="min-h-11 rounded-full bg-[color:var(--ink)] px-5 text-xs font-semibold text-[color:var(--canvas)] transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               {busy === "yes" ? "…" : "Bet YES"}
             </button>
@@ -520,7 +519,7 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
             disabled={!!busy}
             onClick={() => act("refund", () => writeContractAsync({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "claimRefund", args: [market.id], chainId: ritualChain.id }))}
             className="min-h-11 rounded-full px-5 text-xs font-semibold disabled:opacity-40"
-            style={{ background: "rgba(251,191,36,0.15)", color: "var(--warn)", border: "1px solid rgba(251,191,36,0.35)" }}
+            style={{ background: "var(--warn-wash)", color: "var(--warn)", border: "1px solid var(--warn-border)" }}
           >
             {busy === "refund" ? "…" : "Claim refund"}
           </button>
@@ -531,7 +530,7 @@ function MarketCard({ market, currentBlock, onAction }: { market: Market; curren
         {err && (
           <p
             className="mt-3 break-all rounded-xl px-4 py-2 text-xs leading-relaxed"
-            style={{ background: "rgba(248,113,113,0.12)", color: "var(--danger)" }}
+            style={{ background: "var(--danger-wash)", color: "var(--danger)" }}
             role="alert"
           >
             {err}
