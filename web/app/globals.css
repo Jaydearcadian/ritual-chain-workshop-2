@@ -1,8 +1,54 @@
 @import "tailwindcss";
 
+/* ── RitualPredict canonical tokens (see DESIGN.md) ─────────────────────── */
 :root {
-  --background: #0b0614;
-  --foreground: #f8fafc;
+  /* surfaces */
+  --ink-900: #0a0612;
+  --ink-800: #100a1c;
+  --ink-700: #181026;
+  --paper: rgba(255, 255, 255, 0.04);
+  --hairline: rgba(255, 255, 255, 0.09);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+
+  /* text */
+  --text-primary: #f5f2fb;
+  --text-secondary: #b9b2cd;
+  --text-muted: #8f88a6;
+  --text-faint: #6d6684;
+
+  /* brand */
+  --violet-brand: #7c3aed;
+  --magenta-brand: #ec4899;
+  --orange-brand: #f97316;
+  --accent-soft: rgba(236, 72, 153, 0.12);
+
+  /* lifecycle states */
+  --state-open: #a78bfa;
+  --state-closed: #7dd3fc;
+  --state-resolving: #f472b6;
+  --state-resolved: #34d399;
+  --state-invalid: #fbbf24;
+
+  /* feedback */
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+
+  /* geometry */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --glow-rest: 0 0 24px rgba(236, 72, 153, 0.18);
+  --glow-lift: 0 0 44px rgba(236, 72, 153, 0.32);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur-slow: 560ms;
+
+  /* aliases for existing class names */
+  --background: var(--ink-900);
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
@@ -10,16 +56,60 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-violet-brand: #7c3aed;
-  --color-magenta-brand: #ec4899;
-  --color-orange-brand: #f97316;
+  --color-violet-brand: var(--violet-brand);
+  --color-magenta-brand: var(--magenta-brand);
+  --color-orange-brand: var(--orange-brand);
+  --color-state-open: var(--state-open);
+  --color-state-closed: var(--state-closed);
+  --color-state-resolving: var(--state-resolving);
+  --color-state-resolved: var(--state-resolved);
+  --color-state-invalid: var(--state-invalid);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--ink-900);
+  color: var(--text-primary);
+  font-size: 1rem; /* 16px body — canonical */
+  line-height: 1.65;
 }
 
+/* Global keyboard focus — never removed without replacement */
+:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link — first focusable element on every page */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: var(--text-primary);
+  color: var(--ink-900);
+  font-weight: 600;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Brand gradient text — headings only */
 .brand-text {
   background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #fb923c 100%);
   -webkit-background-clip: text;
@@ -27,31 +117,100 @@ body {
   color: transparent;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+/* Raised card surface */
+.surface {
+  background: linear-gradient(180deg, var(--ink-800), color-mix(in srgb, var(--ink-800) 60%, var(--ink-900)));
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
 }
-.glass:hover {
-  border-color: rgba(236, 72, 153, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 20px 50px rgba(124, 58, 237, 0.2);
+.surface-inset {
+  background: var(--ink-700);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
 }
 
-.blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
+/* Primary pill control (one per view) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.75rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--violet-brand), var(--magenta-brand) 55%, var(--orange-brand));
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: var(--glow-rest);
+  transition: box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: var(--glow-lift);
+  transform: translateY(-1px);
+}
+.btn-primary:disabled {
   opacity: 0.45;
-  pointer-events: none;
-  animation: breathe 14s ease-in-out infinite alternate;
-}
-@keyframes breathe {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-40px, 30px) scale(1.12); }
+  cursor: not-allowed;
 }
 
+/* Secondary pill control */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--hairline-strong);
+  color: var(--text-primary);
+}
+.btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Small action button inside dense rows — still 44px tall */
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.btn-quiet:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+/* Standard input */
+.field-input {
+  min-height: 44px;
+  width: 100%;
+  padding: 0 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--ink-700);
+  color: var(--text-primary);
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.field-input::placeholder {
+  color: var(--text-faint);
+}
+.field-input:focus-visible {
+  border-color: rgba(167, 139, 250, 0.55);
+}
+
+/* Ambient page texture — static, masked, non-animated */
 .tech-grid {
   background-image:
     linear-gradient(rgba(124, 58, 237, 0.05) 1px, transparent 1px),
@@ -60,23 +219,29 @@ body {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%);
 }
 
-@keyframes resolve-in {
-  0% { opacity: 0; filter: blur(5px); letter-spacing: 0.04em; transform: translateY(3px); }
-  100% { opacity: 1; filter: blur(0); letter-spacing: normal; transform: translateY(0); }
+/* Entrance reveals */
+@keyframes rise-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-.resolve-slow { animation: resolve-in 620ms cubic-bezier(0.22,1,0.36,1) both; }
-.resolve-support { animation: resolve-in 560ms 140ms cubic-bezier(0.22,1,0.36,1) both; }
-.resolve-accent { animation: resolve-accent 700ms 90ms cubic-bezier(0.22,1,0.36,1) both; }
-@keyframes resolve-accent {
+.rise-in { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.rise-in-late { animation: rise-in var(--dur-slow) 120ms var(--ease-out) both; }
+
+@keyframes accent-wipe {
   0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateY(2px); }
   55% { opacity: 1; clip-path: inset(0 12% 0 0); }
   100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
 }
-.resolve-fast { animation: resolve-in 420ms cubic-bezier(0.22,1,0.36,1) both; }
+.accent-wipe { animation: accent-wipe 700ms 90ms var(--ease-out) both; }
 
+/* Signal sweep — used only under the Resolving state */
 @keyframes signal-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 .signal-sweep { animation: signal-sweep 1.8s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .resolve-slow,.resolve-support,.resolve-accent,.resolve-fast,.signal-sweep,.blob { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
