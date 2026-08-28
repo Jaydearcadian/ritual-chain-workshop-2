@@ -124,6 +124,34 @@ export default function TemplatePage() {
           </div>
         </div>
       </section>
+
+      <section aria-labelledby="proof-heading" className="mx-auto max-w-5xl px-2 pb-20 pt-16 sm:px-6 sm:pb-28 sm:pt-24">
+        <p className="eyebrow">The proof</p>
+        <div className="mt-4 grid gap-6 sm:grid-cols-[1fr_1.2fr] sm:items-end sm:gap-12">
+          <h2 id="proof-heading" className="font-display text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.02em] text-[color:var(--ink)] sm:text-6xl">Built to be<br /><span className="text-[color:var(--ink-secondary)]">inspected.</span></h2>
+          <p className="max-w-lg text-base leading-relaxed text-[color:var(--ink-secondary)] sm:text-lg">Odds is implemented in the fork—not presented as a concept mockup. The local evidence is open, reproducible, and honest about what is not live.</p>
+        </div>
+
+        <div className="mt-12 grid border-y border-[color:var(--hairline)] sm:grid-cols-4">
+          {[
+            ["26", "local tests", "Hardhat lifecycle and failure coverage"],
+            ["01", "core primitive", "RitualPredict resolves the market rule"],
+            ["01", "competition layer", "Odds composes Last Predictor Standing"],
+            ["0x", "hidden claims", "No live deployment or fake receipt"],
+          ].map(([value, label, copy]) => (
+            <div key={label} className="border-b border-[color:var(--hairline)] py-6 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0">
+              <p className="font-display text-3xl font-semibold tracking-tight text-[color:var(--ink)]">{value}</p>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.08em] text-[color:var(--ink)]">{label}</p>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">{copy}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center gap-5">
+          <a href="/proof" className="btn-secondary text-sm">Read the evidence <span aria-hidden>→</span></a>
+          <a href="/play" className="btn-primary text-sm">Play Odds <span aria-hidden>→</span></a>
+        </div>
+      </section>
     </main>
   );
 }
