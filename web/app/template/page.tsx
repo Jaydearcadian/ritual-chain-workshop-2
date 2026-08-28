@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = { title: "Template" };
 
@@ -62,14 +61,6 @@ export default function TemplatePage() {
   return (
     <main className="mx-auto min-h-screen max-w-[1440px] px-3 py-4 sm:px-6 sm:py-8">
       <section className="overflow-hidden rounded-[24px] border-2 border-white bg-[color:var(--template-stage,#f1f5fb)] shadow-[0_20px_60px_rgba(70,95,125,0.08)]">
-        <nav className="flex min-h-16 items-center justify-between gap-5 bg-white px-5 sm:px-8" aria-label="Template navigation">
-          <Link href="/" className="font-display text-lg font-semibold uppercase tracking-tight text-[color:var(--ink)]">Odds</Link>
-          <div className="hidden items-center gap-6 text-xs text-[color:var(--ink-secondary)] sm:flex">
-            <Link href="/play" className="hover:text-[color:var(--ink)]">Play</Link><Link href="/mechanics" className="hover:text-[color:var(--ink)]">Mechanics</Link><Link href="/about" className="hover:text-[color:var(--ink)]">About</Link>
-          </div>
-          <Link href="/play" className="btn-primary text-xs">Play Odds <span aria-hidden>→</span></Link>
-        </nav>
-
         <div className="px-5 pb-10 pt-12 text-center sm:px-10 sm:pb-14 sm:pt-16">
           <p className="eyebrow">A competitive forecasting game</p>
           <h1 className="mx-auto mt-5 max-w-2xl font-display text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.02em] text-[color:var(--ink)] sm:text-7xl">Many calls.<br /><span className="text-[color:var(--ink-secondary)]">One survivor.</span></h1>
