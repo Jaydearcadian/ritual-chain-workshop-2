@@ -91,6 +91,39 @@ export default function TemplatePage() {
           ))}
         </ol>
       </section>
+
+      <section aria-labelledby="mechanism-heading" className="border-y border-[color:var(--hairline)] bg-[color:var(--canvas-deep)] px-2 py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl">
+          <p className="eyebrow">The mechanism</p>
+          <div className="mt-4 grid gap-6 sm:grid-cols-[1fr_1.2fr] sm:items-end sm:gap-12">
+            <h2 id="mechanism-heading" className="font-display text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.02em] text-[color:var(--ink)] sm:text-6xl">The rule<br /><span className="text-[color:var(--ink-secondary)]">settles itself.</span></h2>
+            <p className="max-w-lg text-base leading-relaxed text-[color:var(--ink-secondary)] sm:text-lg">Every market begins with an immutable rule. RitualPredict waits for the resolution block, retrieves external evidence, extracts the result, and records YES, NO, or INVALID.</p>
+          </div>
+
+          <ol className="mt-12 grid overflow-hidden rounded-[18px] border border-[color:var(--hairline)] bg-[color:var(--surface-raised)] sm:grid-cols-6">
+            {[
+              ["01", "Immutable rule"],
+              ["02", "Scheduler"],
+              ["03", "HTTP"],
+              ["04", "JQ extraction"],
+              ["05", "Comparator"],
+              ["06", "YES / NO / INVALID"],
+            ].map(([number, label], index) => (
+              <li key={number} className="relative border-b border-[color:var(--hairline)] px-4 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:px-5 sm:last:border-r-0">
+                <p className="font-mono text-[10px] text-[color:var(--ink-muted)]">{number}</p>
+                <p className="mt-3 text-sm font-semibold text-[color:var(--ink)]">{label}</p>
+                {index < 5 && <span className="absolute right-3 top-1/2 hidden -translate-y-1/2 text-[color:var(--ink-faint)] sm:block" aria-hidden>→</span>}
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <div className="border-l-2 border-[color:var(--state-resolved)] pl-4"><p className="font-mono text-xs text-[color:var(--state-resolved)]">YES</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">The observation meets the rule.</p></div>
+            <div className="border-l-2 border-[color:var(--ink-secondary)] pl-4"><p className="font-mono text-xs text-[color:var(--ink-secondary)]">NO</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">The observation fails the rule.</p></div>
+            <div className="border-l-2 border-[color:var(--accent)] pl-4"><p className="font-mono text-xs text-[color:var(--accent)]">INVALID</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">Evidence failed. No one is incorrectly eliminated; stakes remain refundable.</p></div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
