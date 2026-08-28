@@ -28,7 +28,8 @@ export const viewport: Viewport = {
 };
 
 const NAV_LINKS = [
-  { href: "/markets", label: "Play" },
+  { href: "/play", label: "Play" },
+  { href: "/markets", label: "Markets" },
   { href: "/mechanics", label: "Mechanics" },
 ] as const;
 

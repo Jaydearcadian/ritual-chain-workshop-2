@@ -1,149 +1,103 @@
-# Ritual Predict — Workshop
+# Odds — Last Predictor Standing
 
-A self-resolving binary prediction market on [Ritual Chain](https://docs.ritualfoundation.org).
+Odds is a competitive forecasting game built on a self-resolving prediction-market primitive.
+Players call YES or NO, survive the rounds their calls get right, and the last predictor standing takes the pool.
 
-Create a market like _"Will ETH/USD be at least $4,000 when this market resolves?"_, stake native
-RITUAL on YES or NO, and watch it settle itself. When the betting window closes, **nobody presses a
-resolve button and no backend cron job runs**. The Ritual Scheduler wakes the contract at a block
-fixed when the market was created; the contract calls the HTTP precompile to read the configured
-oracle URL, extracts one number with the jq precompile, compares it to the target, and settles.
-Winners then pull their proportional share of the pool.
+The underlying contract is `RitualPredict.sol`. It owns truth resolution: a market fixes its question, oracle URL,
+JSON path, target, comparator, and block deadlines at creation. Ritual's Scheduler wakes the contract; the HTTP and
+JQ precompiles fetch and extract evidence; the comparator settles YES or NO. If evidence fails, the market becomes
+`Invalid` and stakes are refundable. `Invalid` is never interpreted as `NO`.
 
----
+> Odds owns competition state. RitualPredict owns forecast truth. The authorities stay separate.
 
-## Architecture
+## Repository map
 
-```
-                 createMarket()                    ┌──────────────────────────┐
-   user  ─────────────────────────────────────────▶│  RitualPredict.sol       │
-   user  ─────────── bet(id, YES|NO) ─────────────▶│                          │
-                                                   │  markets, pools, stakes  │
-                                     schedule() ◀──┤                          │
-                                                   └──────────────────────────┘
-    ┌─────────────────────────────┐                     ▲              │
-    │ Scheduler  0x56e7…D58B      │  onScheduledResolve │              │ deposit()
-    │ system contract             │─────────────────────┘              ▼
-    │ fires at resolveBlock,      │                        ┌────────────────────────┐
-    │ 3 attempts, 200 blocks apart│                        │ RitualWallet 0x532F…   │
-    └─────────────────────────────┘                        │ prepaid execution fees │
-                                                           └────────────────────────┘
-                        inside that one scheduled transaction:
-
-   TEEServiceRegistry 0x9644…  ──pickServiceByCapability(HTTP_CALL)──▶  executor address
-   HTTP precompile    0x0801   ──GET oracleUrl (in a TEE)───────────▶  demo oracle
-   jq  precompile     0x0803   ──jsonPath, outputType=uint256───────▶  observed value
-                                          │
-                                          ▼
-                        observed ⋈ target  →  Resolved(YES/NO)
-                        read failed 3×     →  Invalid (everyone refunds)
+```text
+hardhat/
+  contracts/RitualPredict.sol              self-resolving market primitive
+  contracts/extensions/OddsCompetition.sol Last Predictor Standing composition layer
+  contracts/mocks/RitualMocks.sol          local canonical-address mocks
+  test/RitualPredict.local.test.ts         basic local lifecycle tests
+  test/RitualPredict.comprehensive.test.ts mocked precompile, retry, payout coverage
+  scripts/                                 deploy, status, funding, demo-market helpers
+web/
+  app/page.tsx                             Odds editorial landing
+  app/play/page.tsx                        competition surface and field motif
+  app/markets/page.tsx                     market-primitive dApp
+  app/mechanics/page.tsx                   resolution and failure semantics
+  app/proof/page.tsx                       evidence and reproduction guide
+  app/about/page.tsx                       product thesis / manifesto
+  components/ForecastField.tsx              original monochrome survivor motif
+  DESIGN.md                                canonical frontend design system
 ```
 
----
+## Product surfaces
 
-## Repo layout
+- `/` — Odds landing: the game first, the primitive underneath.
+- `/play` — Last Predictor Standing competition surface. The current fork is honest about the competition contract
+  not being bound to a deployed address; it does not invent live rounds.
+- `/markets` — create and inspect `RitualPredict` markets, stake YES/NO, fund execution, and claim winnings/refunds.
+- `/mechanics` — Scheduler → HTTP → JQ → comparator, retries, block deadlines, invalidation, and payouts.
+- `/proof` — verified evidence, local reproduction, and explicit evidence limits.
+- `/about` — the mechanism-first thesis behind Odds.
 
-```
-hardhat/                 RitualPredict contract, tests, deploy scripts
-web/                     Next.js workshop demo (landing + /markets + /mechanics)
-  app/page.tsx           cyber-luxury landing — 4-beat pipeline + lifecycle strip
-  app/markets/page.tsx   dApp — create, bet, claim, fund
-  app/mechanics/page.tsx deep-dive — failure semantics, block-time, payouts
-  app/api/oracle/eth/    demo oracle (GET → { price, symbol, ts })
-  lib/predict-abi.ts     ABI from hardhat/artifacts (regenerate via export-abi)
-```
+## Local verification
 
-## Prerequisites
-
-- Node.js 20+ and `npm` (or `pnpm`)
-- A wallet with testnet RITUAL from <https://faucet.ritualfoundation.org>
-
-## Setup — contracts
+Requirements: Node.js 22+ and npm.
 
 ```bash
 cd hardhat
 npm install
-cp .env.example .env   # set RITUAL_PRIVATE_KEY (DEPLOYER_PRIVATE_KEY in hardhat.config.ts)
+npx hardhat compile
 npx hardhat test
-npx hardhat run scripts/deploy.ts --network ritual
-PREDICT_ADDRESS=0x... npx hardhat run scripts/status.ts --network ritual
 ```
 
-## Setup — web demo
+The verified local result is **26 passing tests**: 2 Counter tests, 5 lifecycle tests, and 19 comprehensive
+RitualPredict tests. The comprehensive suite uses Hardhat EDR and mocked Scheduler, HTTP, JQ, TEE registry, and
+wallet contracts at the canonical addresses. This is local execution evidence, not a live Ritual receipt.
+
+## Run the web app
 
 ```bash
 cd web
 npm install
 cp .env.example .env.local
-# .env.local needs:
-#   NEXT_PUBLIC_PREDICT_ADDRESS=0x...   # from deploy.ts
-#   NEXT_PUBLIC_DEMO_ORACLE_URL=https://<tunnel>/api/oracle/eth  # or http://localhost:3000/api/oracle/eth
-npm run dev   # http://localhost:3000  — landing at /, dApp at /markets
+# Set NEXT_PUBLIC_PREDICT_ADDRESS only when a deployed RitualPredict address exists.
+npm run dev
+```
+
+The web app remains truthful when no address is configured: `/markets` shows `No contract bound` instead of fake data.
+The demo oracle is available at `/api/oracle/eth` and returns `{ price, symbol, ts }`; a remote executor needs a public
+URL, so expose the web server with:
+
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+
+Then use `https://<tunnel>/api/oracle/eth` as the market's `oracleUrl` and `NEXT_PUBLIC_DEMO_ORACLE_URL`.
+
+Production gates:
+
+```bash
 npm run build
 npx tsc --noEmit
 ```
 
-### Demo oracle & tunnel
+## Design system
 
-The TEE executor that runs the HTTP precompile cannot reach `localhost`. For live resolution:
+`web/DESIGN.md` is the canonical visual contract. The current direction is editorial and paper-native:
+warm canvas, near-black ink, Oswald display type, Inter body copy, hairline separation, one semantic rust accent,
+minimal navigation, and a monochrome forecast field that narrows from many calls to one survivor.
 
-```bash
-cd web && npm run dev
-cloudflared tunnel --url http://localhost:3000
-# copy https://...trycloudflare.com → use as NEXT_PUBLIC_DEMO_ORACLE_URL
-# and as ORACLE_URL when creating a market (CLI or UI)
-PREDICT_ADDRESS=0x... ORACLE_URL=https://<tunnel>/api/oracle/eth npx hardhat run scripts/create-demo-market.ts --network ritual
-```
+The UI avoids fake metrics, neon dashboard decoration, and claims of live operation. Testnet status and unbound
+contracts are explicit.
 
-See `web/README.md` for full oracle/tunnel notes.
+## Scope and non-goals
 
-### Design decisions worth knowing
+This repository intentionally does not include an AMM, order book, governance, separate token, centralized resolver,
+upgrade proxy, or social/LLM oracle. Native-asset staking is pari-mutuel and claims are pull-based.
 
-**Deadlines are block numbers, not timestamps.** The Scheduler fires at a _block_, so betting also
-closes at a _block_. That way "betting is closed" and "the Scheduler woke us" can never disagree,
-whatever the chain's block time does. `createMarket` takes human durations in seconds and converts
-them using the `blockTimeMs` fixed at deployment. Nothing on-chain reads `block.timestamp`.
+## Proof of Building
 
-**On Ritual Chain, `block.timestamp` is Unix milliseconds** (≈`1.786e12`), not seconds — verified
-against the live chain, not assumed. That is a good reason to avoid it entirely, which this contract
-does. Measured block time was ≈195 ms when this was written; run
-`npx hardhat run scripts/block-time.ts` to check it for yourself.
-
-**A failed oracle read is never a NO.** `onScheduledResolve` treats a precompile failure, a non-200
-response, an undecodable envelope, an executor error message, and an unparseable body all as
-_failures_, not as a negative outcome. The response decode happens through an external `try`, so
-malformed bytes surface as a caught failure instead of reverting the execution and rolling back the
-attempt counter.
-
-**Retries are the Scheduler's own mechanism.** `createMarket` books `numCalls = 3` executions
-`frequency = 200` blocks apart in a single `schedule()` call. Attempt 1 lands at `resolveBlock`; if
-it succeeds, the contract `cancel()`s the remainder; if all three fail, the market becomes `Invalid`
-and every stake is refundable. Each attempt re-rolls the TEE executor seed, so one unhealthy
-executor cannot sink a market. The callback is idempotent, so a leftover execution is harmless.
-
-**No executor is hardcoded.** The contract calls
-`TEEServiceRegistry.pickServiceByCapability(HTTP_CALL, true, seed, 8)` at resolution time.
-
-**Payouts are pull-based and loop-free.** `claimWinnings` computes
-`stake × totalPool ÷ winningPool` for the caller only. Integer division leaves sub-wei dust in the
-contract; that is deliberate and negligible.
-
-**Empty winning side → refundable.** Pari-mutuel has no denominator when nobody backed the winning
-answer, so the market records the outcome and observed value, then becomes `Invalid` so everyone
-takes their stake back.
-
-**Resolution parameters are immutable.** `target`, `comparator`, `oracleUrl`, `jsonPath`, and
-`resolveBlock` have no setter. The `ResolutionRuleSet` event records them at creation.
-
----
-
-## Scope
-
-Intentionally not included: an AMM, an order book, an order-matching engine, governance, a separate
-ERC-20, a centralized resolver, or an upgrade proxy. Staking uses the chain's native asset and the
-betting model is plain pari-mutuel: two running totals and one mapping per side.
-
-## Reference
-
-- Ritual Chain docs — <https://docs.ritualfoundation.org>
-- dApp skills — <https://github.com/ritual-foundation/ritual-dapp-skills>
-- Explorer — <https://explorer.ritualfoundation.org> · Faucet — <https://faucet.ritualfoundation.org>
+This repository is the public fork of `cozfuttu/ritual-chain-workshop-2`, created through the GitHub fork path and
+kept under the required name. See [`PROOF.md`](./PROOF.md) for the evidence ledger and reviewer checklist.

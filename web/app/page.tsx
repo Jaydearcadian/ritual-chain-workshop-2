@@ -17,8 +17,8 @@ export default function Landing() {
           last one standing takes the pool.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/markets" className="btn-primary text-sm">
-            Enter the game
+          <Link href="/play" className="btn-primary text-sm">
+            Play Odds
             <span aria-hidden>→</span>
           </Link>
           <Link href="/mechanics" className="btn-secondary text-sm">
@@ -50,10 +50,10 @@ export default function Landing() {
               rules against you, you are struck from the field.
             </p>
             <Link
-              href="/markets"
+              href="/play"
               className="mt-7 inline-flex min-h-11 items-center gap-2 text-base font-semibold text-[color:var(--ink)] underline-offset-4 transition-colors hover:underline"
             >
-              Go to the markets <span aria-hidden>→</span>
+              Enter the game <span aria-hidden>→</span>
             </Link>
           </div>
           <div className="sm:border-l sm:border-[color:var(--hairline)] sm:pl-12">

@@ -206,6 +206,15 @@ body {
   border-color: var(--accent);
 }
 
+.eyebrow {
+  color: var(--ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 /* Entrance reveals — subtle, once */
 @keyframes rise-in {
   0% {
