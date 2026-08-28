@@ -68,6 +68,29 @@ export default function TemplatePage() {
           <ConnectorDiagram />
         </div>
       </section>
+
+      <section aria-labelledby="round-heading" className="mx-auto max-w-5xl px-2 pb-8 pt-16 text-left sm:px-6 sm:pb-14 sm:pt-24">
+        <p className="eyebrow">The round</p>
+        <div className="mt-4 grid gap-6 sm:grid-cols-[1fr_1.2fr] sm:items-end sm:gap-12">
+          <h2 id="round-heading" className="font-display text-4xl font-semibold uppercase leading-[0.95] tracking-[-0.02em] text-[color:var(--ink)] sm:text-6xl">Call.<br />Survive.<br /><span className="text-[color:var(--ink-secondary)]">Call again.</span></h2>
+          <p className="max-w-lg text-base leading-relaxed text-[color:var(--ink-secondary)] sm:text-lg">Every round begins with a forecast. When the market resolves, correct calls stay in the field and wrong calls leave it. The last predictor standing takes the pool.</p>
+        </div>
+
+        <ol className="mt-12 grid border-t border-[color:var(--hairline)] sm:grid-cols-4">
+          {[
+            ["01", "Call", "Choose YES or NO. Stake native RITUAL against the fixed market rule."],
+            ["02", "Survive", "The market closes. Finalized evidence decides which calls remain."],
+            ["03", "Call again", "Survivors enter the next round as the field narrows."],
+            ["04", "Take the pool", "The last survivor claims the winning pool. INVALID stays refundable."],
+          ].map(([number, title, copy]) => (
+            <li key={number} className="border-b border-[color:var(--hairline)] py-6 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0">
+              <p className="font-mono text-xs text-[color:var(--ink-muted)]">{number}</p>
+              <h3 className="mt-5 font-display text-2xl font-semibold uppercase tracking-tight text-[color:var(--ink)]">{title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-secondary)]">{copy}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
     </main>
   );
 }
