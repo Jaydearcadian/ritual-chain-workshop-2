@@ -7,7 +7,7 @@ export default function Landing() {
       {/* Hero — one focal center: the game */}
       <section className="mx-auto w-full max-w-5xl px-6 pb-2 pt-14 text-center sm:pt-20">
         <p className="text-[11px] uppercase tracking-[0.35em] text-[color:var(--ink-muted)]">
-          A competitive forecasting game · Ritual Chain testnet
+          Odds · Last Predictor Standing
         </p>
         <h1 className="mx-auto mt-6 max-w-3xl text-balance font-display text-[44px] font-semibold uppercase leading-[1.05] tracking-[0.01em] text-[color:var(--ink)] sm:text-7xl">
           Last predictor standing
