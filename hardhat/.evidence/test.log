@@ -1,8 +1,41 @@
+No contracts to compile
+
+Running Solidity tests
+
+
+Running node:test tests
+
+  Counter
     ✔ Should emit the Increment event when calling the inc() function
     ✔ The sum of the Increment events should match the current value
+
+  RitualPredict — comprehensive local (mocked precompiles + scheduler)
+    ✔ computes closeBlock and resolveBlock from blockTimeMs
+    ✔ emits MarketCreated (twice), ResolutionRuleSet and books scheduleId
+    ✔ reverts on bad durations and empty strings
+    ✔ resolution rule is immutable (no setter, getMarket returns same)
+    ✔ accumulates YES/NO stakes and exposes stakesOf (no AlreadyEntered)
+    ✔ reverts ZeroStake and BettingClosed after closeBlock
+    ✔ reverts OnlyScheduler when caller is not the scheduler
+    ✔ resolves YES when observed >= target (GTE) and emits events
+    ✔ resolves NO when observed < target (GTE)
+    ✔ comparator GT/LT/LTE behave correctly (76ms)
+    ✔ empty winning pool -> Invalid (refundable)
+    ✔ no executor available fails and becomes Invalid after MAX_ATTEMPTS
+    ✔ HTTP non-200, executor error, precompile revert and jq fail all become Invalid after 3 attempts
+    ✔ attempt counter increments and Resolving state after intermediate failures
+    ✔ idempotency: extra scheduler calls after terminal state are harmless
+    ✔ claimWinnings pari-mutuel and claimRefund on Invalid
+    ✔ claimWinnings reverts NotResolved before resolution and claimRefund reverts NotInvalid when Resolved
+    ✔ fundExecution deposits to RitualWallet and executionBalance reflects it
+    ✔ getMarkets newest-first and getMarket UnknownMarket revert
+
+  RitualPredict — local lifecycle (no external chain)
     ✔ compiles and deploys with blockTimeMs
     ✔ createMarket validates and books a market
     ✔ accepts YES/NO bets and tracks pools
     ✔ rejects empty question and zero stake
     ✔ getMarkets returns newest-first
-7 passing (7 nodejs)
+
+
+26 passing (26 nodejs)
