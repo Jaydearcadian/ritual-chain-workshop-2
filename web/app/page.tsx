@@ -9,8 +9,11 @@ export default function Landing() {
         <p className="text-[11px] uppercase tracking-[0.35em] text-[color:var(--ink-muted)]">
           Odds · Last Predictor Standing
         </p>
-        <h1 className="mx-auto mt-6 max-w-3xl text-balance font-display text-[44px] font-semibold uppercase leading-[1.05] tracking-[0.01em] text-[color:var(--ink)] sm:text-7xl">
-          Last predictor standing
+        <h1 className="mx-auto mt-6 max-w-3xl text-balance font-display text-[56px] font-semibold uppercase leading-[0.92] tracking-[-0.02em] text-[color:var(--ink)] sm:text-8xl">
+          Odds
+          <span className="mt-3 block text-[0.52em] tracking-[0.01em] text-[color:var(--ink-secondary)]">
+            Last predictor standing
+          </span>
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-balance text-base leading-relaxed text-[color:var(--ink-secondary)] sm:text-lg">
           Everyone calls the outcome, and the market settles itself on-chain. Miss the final call and you are out — the
