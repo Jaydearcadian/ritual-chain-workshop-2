@@ -8,13 +8,13 @@ type Choice = "YES" | "NO";
 type Player = { name: string; choice: Choice; alive: boolean };
 
 const BASE_PLAYERS = ["Mara", "Ivo", "Nia", "Sol", "Ren", "Tao", "Uma", "Kai"];
-const OUTCOMES: Choice[] = ["YES", "NO", "YES", "YES", "NO"];
+const OUTCOMES: Choice[] = ["YES", "NO", "YES", "NO", "YES"];
 const CALLS: Choice[][] = [
   ["YES", "NO", "YES", "NO", "YES", "YES", "NO", "YES"],
   ["NO", "NO", "YES", "YES", "NO", "YES", "YES", "NO"],
   ["YES", "NO", "YES", "NO", "YES", "YES", "NO", "YES"],
   ["NO", "YES", "YES", "NO", "NO", "YES", "YES", "NO"],
-  ["YES", "NO", "NO", "NO", "YES", "YES", "NO", "YES"],
+  ["YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO"],
 ];
 
 export function CompetitionDemo() {
