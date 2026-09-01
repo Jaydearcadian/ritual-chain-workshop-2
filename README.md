@@ -34,8 +34,7 @@ web/
 ## Product surfaces
 
 - `/` — Odds landing: the game first, the primitive underneath.
-- `/play` — Last Predictor Standing competition surface. The current fork is honest about the competition contract
-  not being bound to a deployed address; it does not invent live rounds.
+- `/play` — Last Predictor Standing competition surface. It includes a deterministic local simulation of a complete winner path and an `INVALID`/refund path; neither represents live chain state.
 - `/markets` — create and inspect `RitualPredict` markets, stake YES/NO, fund execution, and claim winnings/refunds.
 - `/mechanics` — Scheduler → HTTP → JQ → comparator, retries, block deadlines, invalidation, and payouts.
 - `/proof` — verified evidence, local reproduction, and explicit evidence limits.

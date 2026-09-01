@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type Phase = "idle" | "open" | "resolving" | "resolved" | "complete";
 type Choice = "YES" | "NO";
+type Scenario = "winner" | "invalid";
 
 type Player = { name: string; choice: Choice; alive: boolean };
 
@@ -19,6 +20,7 @@ const CALLS: Choice[][] = [
 
 export function CompetitionDemo() {
   const [phase, setPhase] = useState<Phase>("idle");
+  const [scenario, setScenario] = useState<Scenario>("winner");
   const [round, setRound] = useState(0);
   const [players, setPlayers] = useState<Player[]>(() => BASE_PLAYERS.map((name, i) => ({ name, choice: CALLS[0][i], alive: true })));
 
@@ -34,10 +36,12 @@ export function CompetitionDemo() {
         setPhase("resolving");
       } else if (phase === "resolving") {
         setPhase("resolved");
-        setPlayers((current) => current.map((player) => ({ ...player, alive: player.alive && player.choice === outcome })));
+        if (scenario === "winner") {
+          setPlayers((current) => current.map((player) => ({ ...player, alive: player.alive && player.choice === outcome })));
+        }
       } else if (phase === "resolved") {
         const nextRound = round + 1;
-        if (nextRound >= OUTCOMES.length || alive.length <= 1) {
+        if (scenario === "invalid" || nextRound >= OUTCOMES.length || alive.length <= 1) {
           setPhase("complete");
         } else {
           setRound(nextRound);
@@ -49,7 +53,8 @@ export function CompetitionDemo() {
     return () => window.clearTimeout(timer);
   }, [alive.length, outcome, phase, round]);
 
-  function start() {
+  function start(nextScenario: Scenario = scenario) {
+    setScenario(nextScenario);
     setRound(0);
     setPlayers(BASE_PLAYERS.map((name, i) => ({ name, choice: CALLS[0][i], alive: true })));
     setPhase("open");
@@ -62,6 +67,8 @@ export function CompetitionDemo() {
   }
 
   const progress = phase === "idle" ? 0 : phase === "complete" ? 100 : Math.round(((round * 3 + (phase === "open" ? 1 : phase === "resolving" ? 2 : 3)) / (OUTCOMES.length * 3)) * 100);
+  const isInvalid = scenario === "invalid";
+  const displayedOutcome = isInvalid && phase !== "idle" ? (phase === "resolved" || phase === "complete" ? "INVALID" : "—") : phase === "idle" ? "—" : outcome;
 
   return (
     <section className="surface overflow-hidden" aria-labelledby="demo-heading">
@@ -96,11 +103,11 @@ export function CompetitionDemo() {
         <aside className="border-t border-[color:var(--hairline)] bg-[color:var(--canvas-deep)] p-5 sm:p-7 lg:border-l lg:border-t-0">
           <div className="flex items-center justify-between"><span className="font-mono text-xs uppercase tracking-[0.15em] text-[color:var(--ink-muted)]">Market state</span><span className="font-mono text-xs text-[color:var(--accent)]">{statusLabel}</span></div>
           <div className="mt-8 space-y-6">
-            <div><p className="text-xs uppercase tracking-[0.12em] text-[color:var(--ink-muted)]">Current call</p><p className="mt-2 font-display text-4xl font-semibold text-[color:var(--ink)]">{phase === "idle" ? "—" : outcome}</p></div>
+            <div><p className="text-xs uppercase tracking-[0.12em] text-[color:var(--ink-muted)]">Current call</p><p className="mt-2 font-display text-4xl font-semibold text-[color:var(--ink)]">{displayedOutcome}</p></div>
             <div className="border-t border-[color:var(--hairline)] pt-5"><p className="text-xs uppercase tracking-[0.12em] text-[color:var(--ink-muted)]">Pool</p><p className="mt-2 font-display text-3xl font-semibold text-[color:var(--ink)]">{pool} <span className="font-mono text-xs font-normal text-[color:var(--ink-muted)]">RITUAL</span></p></div>
-            <div className="border-t border-[color:var(--hairline)] pt-5"><p className="text-xs uppercase tracking-[0.12em] text-[color:var(--ink-muted)]">Settlement</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">{phase === "complete" ? "The final survivor takes the pool." : phase === "resolved" ? `The market returned ${outcome}. Wrong calls are removed.` : "Scheduler → HTTP → JQ → comparator"}</p></div>
+            <div className="border-t border-[color:var(--hairline)] pt-5"><p className="text-xs uppercase tracking-[0.12em] text-[color:var(--ink-muted)]">Settlement</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-secondary)]">{isInvalid && phase === "complete" ? "INVALID. No one is eliminated; stakes are refundable." : phase === "complete" ? "The final survivor takes the pool." : phase === "resolved" ? `The market returned ${outcome}. Wrong calls are removed.` : "Scheduler → HTTP → JQ → comparator"}</p></div>
           </div>
-          <div className="mt-9 flex flex-wrap gap-3"><button type="button" onClick={start} disabled={phase !== "idle" && phase !== "complete"} className="btn-primary text-sm">{phase === "complete" ? "Run again" : "Start demo"} <span aria-hidden>→</span></button>{phase !== "idle" && <button type="button" onClick={reset} className="btn-secondary text-sm">Reset</button>}</div>
+          <div className="mt-9 flex flex-wrap gap-3"><button type="button" onClick={() => start("winner")} disabled={phase !== "idle" && phase !== "complete"} className="btn-primary text-sm">{phase === "complete" && !isInvalid ? "Run winner again" : "Run winner"} <span aria-hidden>→</span></button><button type="button" onClick={() => start("invalid")} disabled={phase !== "idle" && phase !== "complete"} className="btn-secondary text-sm">Run INVALID case</button>{phase !== "idle" && <button type="button" onClick={reset} className="btn-secondary text-sm">Reset</button>}</div>
         </aside>
       </div>
     </section>

@@ -18,6 +18,7 @@ local tests, frontend, design system, and this evidence document.
 4. Added `OddsCompetition.sol`, a Last Predictor Standing layer that consumes finalized market outcomes without
    determining truth itself.
 5. Added the Odds web app: landing, play, markets, mechanics, proof, about, and demo oracle routes.
+6. Added a deterministic `/play` simulator with both a winner path and an `INVALID`/refund path; it is presentation evidence for the competition layer, not live chain state.
 
 ## Verified local evidence
 
